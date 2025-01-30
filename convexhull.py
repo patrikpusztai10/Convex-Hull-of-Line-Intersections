@@ -62,7 +62,7 @@ class ConvexHull:
             min_x,min_y=points[min]
             if inter_y<min_y:
                 min=i
-            elif inter_y==min_y and inter_x>min_x:
+            elif inter_y==min_y and inter_x<min_x:
                 min=i
         return min
     def polar_ang(self, p, q):
