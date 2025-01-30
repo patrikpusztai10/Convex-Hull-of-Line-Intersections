@@ -23,16 +23,16 @@ class LineIntersection:
         while len(self.lines)<nr:
             x1,y1 = random.randint(minx,maxx),random.randint(miny, maxy)
             x2,y2 = random.randint(minx,maxx),random.randint(miny, maxy)
-            screen = tlines.getscreen()
-            screen.tracer(0)
+            sc = tlines.getscreen()
+            sc.tracer(0)
             if (x1, y1, x2, y2) not in self.lines and (x1 != x2 or y1 != y2):
                 self.lines.append((x1, y1, x2, y2))
                 tlines.penup()
                 tlines.goto(x1, y1)
                 tlines.pendown()
                 tlines.goto(x2, y2)
-            screen.update()
-            screen.tracer(1)
+            sc.update()
+            sc.tracer(1)
 
             if (x1, y1, x2, y2) not in self.lines and (x1 != x2 or y1 != y2):
                 self.lines.append((x1, y1, x2, y2))
@@ -75,10 +75,10 @@ class LineIntersection:
         if abs(val)<e:
             return 0 #Collinear
         return 1 if val>0 else -1 #1 CCW -1 CW
-    def interSL(self, segment1, segment2):
+    def interSL(self, l1, l2):
 
-        p1,q1=(segment1[0],segment1[1]),(segment1[2],segment1[3])
-        p2,q2=(segment2[0],segment2[1]),(segment2[2],segment2[3])
+        p1,q1=(l1[0], l1[1]),(l1[2], l1[3])
+        p2,q2=(l2[0], l2[1]),(l2[2], l2[3])
         # check all possible cases o1,o2,o3 and o4
         o1=self.orient(p1, q1, p2)
         o2=self.orient(p1, q1, q2)
@@ -86,7 +86,7 @@ class LineIntersection:
         o4=self.orient(p2, q2, q1)
 
         if o1!= o2 and o3!= o4:
-            return self.inter_cram(*segment1, *segment2)
+            return self.inter_cram(*l1, *l2)
 
         if o1==0 and self.on_seg(p1, p2, q1):
             return p2
@@ -103,9 +103,9 @@ class LineIntersection:
     def cramers(self):
         for i,(Ax,Ay,Bx,By) in enumerate(self.lines):
             for Cx,Cy,Dx,Dy in self.lines[i + 1:]:
-                intersection= self.inter_cram(Ax, Ay, Bx, By, Cx, Cy, Dx, Dy)
-                if intersection:
-                    self.inter_pt.add(intersection)
+                inter= self.inter_cram(Ax, Ay, Bx, By, Cx, Cy, Dx, Dy)
+                if inter:
+                    self.inter_pt.add(inter)
     #@profile
     def bent_ott(self):
         events=[]
@@ -146,7 +146,7 @@ class LineIntersection:
         l_screen.color("blue")
         l_screen.penup()
         screen = l_screen.getscreen()
-        screen.tracer(0)  # -only used when the number of lines is bigger such that the points will appear automatically
+        screen.tracer(0) 
         for x, y in self.inter_pt:
             l_screen.goto(x, y)
             l_screen.stamp()
